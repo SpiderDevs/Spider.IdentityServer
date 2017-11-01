@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  spider.identityserver:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "44318"

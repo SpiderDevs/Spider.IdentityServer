@@ -1,0 +1,4 @@
+obj/
+bin/
+src/.vs/config/applicationhost.config
+src/.vs/Spider.IdentityServer/v15/sqlite3/storage.ide

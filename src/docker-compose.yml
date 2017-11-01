@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  spider.identityserver:
+    image: spider.identityserver
+    restart: always
+    ports:
+      - "44318:44318"
+    build:
+      context: ./Spider.IdentityServer
+      dockerfile: Dockerfile
