@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Spider.IdentityServer.Models;
 
 namespace Spider.IdentityServer
 {
     internal class Clients
     {
-        public static IEnumerable<Client> Get()
+        public static IEnumerable<Client> Get(DomainSettings domainSettings)
         {
             return new List<Client> {
             // new Client
@@ -68,13 +69,12 @@ namespace Spider.IdentityServer
                     "role",
                     "customAPI.write"
                 },
-                RedirectUris = new List<string> {"http://localhost:4200"},
-                PostLogoutRedirectUris = new List<string> { "http://localhost:4200" },
+                RedirectUris = new List<string> {domainSettings.InvoicingWebClientUrl},
+                PostLogoutRedirectUris = new List<string> {domainSettings.InvoicingWebClientUrl },
                 AllowedCorsOrigins = new List<string>
                 {
-                    "https://localhost:4200",
-                    "http://localhost:4200",
-                    "http://localhost:64343",
+                    domainSettings.InvoicingWebClientUrl,
+                    domainSettings.InvoicingApiUrl,
                 },
             }
         };

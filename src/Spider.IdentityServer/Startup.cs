@@ -1,21 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Spider.IdentityServer.Models;
 
 namespace Spider.IdentityServer
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public static IConfiguration Configuration { get; set; }
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
-        {          
+        {
+
+            services.Configure<DomainSettings>("DomainSettings", Configuration);
+
             services.AddCors(options =>
             {
                 // this defines a CORS policy called "default"
@@ -29,12 +41,17 @@ namespace Spider.IdentityServer
 
             services.AddMvc();
 
+            string userName = Configuration.GetSection("DomainSettings")["InvoicingWebClientUrl"];
+
+            var domainSettings = new DomainSettings();
+            Configuration.GetSection("DomainSettings").Bind(domainSettings);
+
             services.AddIdentityServer()
-                .AddInMemoryClients(Clients.Get())
+                .AddInMemoryClients(Clients.Get(domainSettings))
                 .AddInMemoryIdentityResources(Resources.GetIdentityResources())
                 .AddInMemoryApiResources(Resources.GetApiResources())
                 .AddTestUsers(Users.Get())
-                .AddTemporarySigningCredential();
+                .AddDeveloperSigningCredential();
 
         }
 
@@ -48,9 +65,7 @@ namespace Spider.IdentityServer
                 app.UseDeveloperExceptionPage();
             }
             app.UseStaticFiles();
-
             app.UseIdentityServer();
-            
             app.UseMvcWithDefaultRoute();
         }
 

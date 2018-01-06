@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace Spider.IdentityServer
 {
@@ -11,12 +12,23 @@ namespace Spider.IdentityServer
     {
         public static void Main(string[] args)
         {
+            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile($"appsettings.json", false,true)
+                .AddJsonFile($"appsettings.{environmentName}.json", true,true)
+                .AddEnvironmentVariables()
+                .AddCommandLine(args)
+                .Build();
+
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseUrls("http://localhost:44318/")
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .UseApplicationInsights()
+                .UseConfiguration(config)
                 .Build();
 
             host.Run();
