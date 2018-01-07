@@ -24,7 +24,6 @@ namespace Spider.IdentityServer
 
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseUrls("http://localhost:44318/")
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .UseApplicationInsights()
