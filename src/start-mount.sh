@@ -14,7 +14,7 @@ else
 fi
 
 docker run  -d --name $imageName \
-	-p 15000:80 \	
+	-p 15000:80 \
 	--mount source=logs-volume,target=/app/Logs \
 	--restart always \
 	$imageName
